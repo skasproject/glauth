@@ -51,6 +51,13 @@ func NewServer(opts ...Option) (*LdapSvc, error) {
 				handler.YubiAuth(s.yubiAuth),
 				handler.LDAPHelper(loh),
 			)
+		case "dump":
+			helper = handler.NewConfigHandler(
+				handler.Logger(&s.log),
+				handler.Config(s.c),
+				handler.YubiAuth(s.yubiAuth),
+				handler.LDAPHelper(loh),
+			)
 		case "plugin":
 			plug, err := plugin.Open(s.c.Helper.Plugin)
 			if err != nil {
@@ -102,6 +109,14 @@ func NewServer(opts ...Option) (*LdapSvc, error) {
 			)
 		case "config":
 			h = handler.NewConfigHandler(
+				handler.Backend(backend),
+				handler.Logger(&s.log),
+				handler.Config(s.c), // TODO only used to access Users and Groups, move that to dedicated options
+				handler.YubiAuth(s.yubiAuth),
+				handler.LDAPHelper(loh),
+			)
+		case "dump":
+			h = handler.NewDumpHandler(
 				handler.Backend(backend),
 				handler.Logger(&s.log),
 				handler.Config(s.c), // TODO only used to access Users and Groups, move that to dedicated options

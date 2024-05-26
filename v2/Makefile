@@ -92,7 +92,7 @@ build: mkbindir
 .PHONY: build
 
 sha256:
-	@sha256sum bin/$(GOOS)$(GOARCH)/glauth > bin/$(GOOS)$(GOARCH)/glauth.sha256
+	# @sha256sum bin/$(GOOS)$(GOARCH)/glauth > bin/$(GOOS)$(GOARCH)/glauth.sha256
 .PHONY: sha256
 
 linux386:

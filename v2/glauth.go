@@ -703,6 +703,7 @@ func validateConfig(cfg config.Config) (*config.Config, error) {
 		case "":
 			cfg.Backends[i].Datastore = "config"
 		case "config":
+		case "dump":
 		case "ldap":
 		case "owncloud":
 		case "plugin":

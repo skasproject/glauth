@@ -25,6 +25,7 @@ type configHandler struct {
 
 // NewConfigHandler creates a new config backed handler
 func NewConfigHandler(opts ...Option) Handler {
+	fmt.Printf("NewConfigHandler()\n")
 	options := newOptions(opts...)
 
 	handler := configHandler{
@@ -38,45 +39,59 @@ func NewConfigHandler(opts ...Option) Handler {
 	return handler
 }
 
+var _ Handler = &configHandler{}
+var _ LDAPOpsHandler = &configHandler{}
+
 func (h configHandler) GetBackend() config.Backend {
+	fmt.Printf("GetBackend()\n")
 	return h.backend
 }
 func (h configHandler) GetLog() *zerolog.Logger {
+	fmt.Printf("GetLog()\n")
 	return h.log
 }
+
 func (h configHandler) GetCfg() *config.Config {
+	fmt.Printf("GetCfg()\n")
 	return h.cfg
 }
 func (h configHandler) GetYubikeyAuth() *yubigo.YubiAuth {
+	fmt.Printf("GetYubikeyAuth()\n")
 	return h.yubikeyAuth
 }
 
 // Bind implements a bind request against the config file
 func (h configHandler) Bind(bindDN, bindSimplePw string, conn net.Conn) (resultCode ldap.LDAPResultCode, err error) {
+	fmt.Printf("Bind()\n")
 	return h.ldohelper.Bind(h, bindDN, bindSimplePw, conn)
 }
 
 // Search implements a search request against the config file
 func (h configHandler) Search(bindDN string, searchReq ldap.SearchRequest, conn net.Conn) (result ldap.ServerSearchResult, err error) {
+	fmt.Printf("Search()\n")
 	return h.ldohelper.Search(h, bindDN, searchReq, conn)
 }
 
 // Add is not supported for a static config file
 func (h configHandler) Add(boundDN string, req ldap.AddRequest, conn net.Conn) (result ldap.LDAPResultCode, err error) {
+	fmt.Printf("Add()\n")
 	return ldap.LDAPResultInsufficientAccessRights, nil
 }
 
 // Modify is not supported for a static config file
 func (h configHandler) Modify(boundDN string, req ldap.ModifyRequest, conn net.Conn) (result ldap.LDAPResultCode, err error) {
+	fmt.Printf("Modify()\n")
 	return ldap.LDAPResultInsufficientAccessRights, nil
 }
 
 // Delete is not supported for a static config file
 func (h configHandler) Delete(boundDN string, deleteDN string, conn net.Conn) (result ldap.LDAPResultCode, err error) {
+	fmt.Printf("Delete()\n")
 	return ldap.LDAPResultInsufficientAccessRights, nil
 }
 
 func (h configHandler) FindUser(userName string, searchByUPN bool) (f bool, u config.User, err error) {
+	fmt.Printf("FindUser()\n")
 	user := config.User{}
 	found := false
 
@@ -98,6 +113,7 @@ func (h configHandler) FindUser(userName string, searchByUPN bool) (f bool, u co
 }
 
 func (h configHandler) FindGroup(groupName string) (f bool, g config.Group, err error) {
+	fmt.Printf("FindGroup()\n")
 	// TODO Does g get erased, and above does u get erased?
 	// TODO and what about f?
 	group := config.Group{}
@@ -112,6 +128,7 @@ func (h configHandler) FindGroup(groupName string) (f bool, g config.Group, err 
 }
 
 func (h configHandler) FindPosixAccounts(hierarchy string) (entrylist []*ldap.Entry, err error) {
+	fmt.Printf("FindPosixAccounts()\n")
 	entries := []*ldap.Entry{}
 
 	for _, u := range h.cfg.Users {
@@ -204,6 +221,7 @@ func (h configHandler) FindPosixAccounts(hierarchy string) (entrylist []*ldap.En
 }
 
 func (h configHandler) FindPosixGroups(hierarchy string) (entrylist []*ldap.Entry, err error) {
+	fmt.Printf("FindPosixGroups()\n")
 	asGroupOfUniqueNames := hierarchy == "ou=groups"
 
 	entries := []*ldap.Entry{}
@@ -230,6 +248,7 @@ func (h configHandler) FindPosixGroups(hierarchy string) (entrylist []*ldap.Entr
 
 // Close does not actually close anything, because the config data is kept in memory
 func (h configHandler) Close(boundDn string, conn net.Conn) error {
+	fmt.Printf("Close()\n")
 	stats.Frontend.Add("closes", 1)
 	return nil
 }

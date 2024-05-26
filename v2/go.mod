@@ -1,9 +1,11 @@
 module github.com/glauth/glauth/v2
 
-go 1.19
+go 1.21
 
 // Do not mistake /vendored for /vendor!
 replace github.com/hydronica/toml => ./vendored/toml
+
+replace github.com/nmcclain/ldap v0.0.0-20210720162743-7f8d1e44eeba => ../../ldap
 
 require (
 	github.com/GeertJohan/yubigo v0.0.0-20190917122436-175bc097e60e
